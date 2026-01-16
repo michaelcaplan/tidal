@@ -10,7 +10,7 @@ namespace SpriteKind {
 }
 function squatStart () {
     scene.setBackgroundImage(assets.image`backHolder`)
-    music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.InBackground)
+    music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
     pauseUntil(() => controller.A.isPressed())
     callGameSelector()
 }
@@ -24,6 +24,7 @@ function benchLoop () {
             benchGameLoopHealthLast = game.runtime()
             benchStatusBar.value += -1
             if (benchStatusBar.value == 0) {
+                music.stopAllSounds()
                 if (info.score() == 0) {
                     game.gameOver(false)
                 } else {
@@ -120,6 +121,7 @@ function clearSplash () {
     sprites.destroy(splashStart, effects.spray, 500)
 }
 function benchStart () {
+    music.play(music.stringPlayable(music.convertRTTTLToMelody("ExciteBi:d=4,o=5,b=90:32p,16e,32p,16g,32p,16c6,32p,32e,32p,16g,32p,16c6,p,16g#,32p,16b,32p,16e6,32p,32g#,32p,16b,32p,16e6,p,32d6,32p,32c6,32p,32d6,32p,32c6,32p,32a,32p,32g,32p,32f,32p,32f,32p,32e,32p,32d#,32p,32d,16p,32c,32p,32e,32p,32f,32p,32f#,32p,32g,32p,16c6"), 120), music.PlaybackMode.LoopingInBackground)
     scene.setBackgroundImage(assets.image`benchBackground`)
     benchState = "racked"
     benchBarTop = 35
@@ -326,6 +328,7 @@ function callGameSelector () {
     })
 }
 function splash () {
+    music.play(music.stringPlayable(music.convertRTTTLToMelody("MortalKo:d=4,o=6,b=35:32a#5,32a#5,32c#6,32a#5,32d#6,32a#5,32f6,32d#6,32c#6,32c#6,32f6,32c#6,32g#6,32c#6,32f6,32c#6,32g#5,32g#5,32c6,32g#5,32c#6,32g#5,32d#6,32c#6,32f#5,32f#5,32a#5,32f#5,32c#6,32f#5,32c#6,32c6,32a#5,32a#5,32c#6,32a#5,32d#6,32a#5,32f6,32d#6,32c#6,32c#6,32f6,32c#6,32g#6,32c#6,32f6,32c#6,32g#5,32g#5,32c6,32g#5,32c#6,32g#5,32d#6,32c#6,32f#5,32f#5,32a#5,32f#5,32c#6,32f#5,32c#6,32c6"), 120), music.PlaybackMode.LoopingInBackground)
     splashTidal = sprites.create(assets.image`tidal`, SpriteKind.Splash)
     splashTidal.setScale(0.25, ScaleAnchor.Middle)
     splashTidal.setPosition(80, 64)
@@ -378,7 +381,7 @@ function benchUpdateHud () {
 }
 function deadliftStart () {
     scene.setBackgroundImage(assets.image`deadliftHolder`)
-    music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.InBackground)
+    music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
     pauseUntil(() => controller.A.isPressed())
     callGameSelector()
 }
