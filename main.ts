@@ -20,7 +20,7 @@ function benchLoop () {
     benchBarHeight = (benchLeftSprite.y + benchRightSprite.y) / 2
     benchCurrentWeight = 135 + benchLevel * 10
     if (benchState == "press") {
-        if (benchGameLoopHealthCurrent >= 500) {
+        if (benchGameLoopHealthCurrent >= 150) {
             benchGameLoopHealthLast = game.runtime()
             benchStatusBar.value += -1
             if (benchStatusBar.value == 0) {
@@ -75,6 +75,7 @@ function benchLoop () {
     	
     }
     benchUpdateBar()
+    benchUpdateArms()
     benchUpdateHud()
 }
 function benchUpdateBar () {
@@ -128,6 +129,35 @@ function benchStart () {
     benchLevel = 1
     benchPlayerSprite = sprites.create(assets.image`benchPlayer`, SpriteKind.Player)
     benchPlayerSprite.setPosition(80, 70)
+    benchPlayerSprite.z = 10
+    benchLeftArmSprite = sprites.create(img`
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        `, SpriteKind.Player)
+    benchLeftArmSprite.setPosition(65, 70)
+    benchLeftArmSprite.z = 0
+    benchRightArmSprite = sprites.create(img`
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        `, SpriteKind.Player)
+    benchRightArmSprite.setPosition(90, 70)
+    benchRightArmSprite.z = 0
     benchStatusBar = statusbars.create(40, 4, StatusBarKind.Health)
     benchStatusBar.value = 100
     benchStatusBar.positionDirection(CollisionDirection.Bottom)
@@ -359,6 +389,18 @@ function benchBButton () {
         }
     }
 }
+function benchUpdateArms () {
+    benchLeftArm = image.create(15, benchPlayerSprite.y - benchBarSprite.y)
+    benchLeftArm.drawLine(0, 0, image.getDimension(benchLeftArm, image.Dimension.Width), image.getDimension(benchLeftArm, image.Dimension.Height), 13)
+    benchLeftArmSprite.setImage(benchLeftArm)
+    benchLeftArmSprite.top = benchBarSprite.bottom
+    benchRightArm = image.create(15, benchPlayerSprite.y - benchBarSprite.y)
+    benchRightArm.drawLine(image.getDimension(benchRightArm, image.Dimension.Width), 0, 0, image.getDimension(benchRightArm, image.Dimension.Height), 13)
+    benchRightArmSprite.setImage(benchRightArm)
+    benchRightArmSprite.top = benchBarSprite.bottom
+}
+let benchRightArm: Image = null
+let benchLeftArm: Image = null
 let splashTitleAnimation: animation.Animation = null
 let splashTitle: Sprite = null
 let splashTidal: Sprite = null
@@ -366,6 +408,8 @@ let gameSelectorSprite: miniMenu.MenuSprite = null
 let benchHudAction: TextSprite = null
 let benchHudWeight: TextSprite = null
 let benchHudLevel: TextSprite = null
+let benchRightArmSprite: Sprite = null
+let benchLeftArmSprite: Sprite = null
 let benchPlayerSprite: Sprite = null
 let splashStart: TextSprite = null
 let gameSelected = ""
