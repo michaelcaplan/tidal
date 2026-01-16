@@ -375,9 +375,6 @@ function benchUpdateHud () {
         benchLevel += 1
         benchStatusBar.value = 100
     }
-    benchRightSprite.sayText(benchGravity)
-    benchRightSprite.setFlag(SpriteFlag.ShowPhysics, true)
-    benchLeftSprite.sayText(benchBarHeight)
 }
 function deadliftStart () {
     scene.setBackgroundImage(assets.image`deadliftHolder`)
@@ -395,10 +392,14 @@ function benchBButton () {
 function benchUpdateArms () {
     benchLeftArm = image.create(15, benchPlayerSprite.y - benchBarSprite.y)
     benchLeftArm.drawLine(0, 0, image.getDimension(benchLeftArm, image.Dimension.Width), image.getDimension(benchLeftArm, image.Dimension.Height), 13)
+    benchLeftArm.drawLine(1, 0, image.getDimension(benchLeftArm, image.Dimension.Width) + 1, image.getDimension(benchLeftArm, image.Dimension.Height) + 1, 13)
+    benchLeftArm.drawLine(2, 0, image.getDimension(benchLeftArm, image.Dimension.Width) + 2, image.getDimension(benchLeftArm, image.Dimension.Height) + 2, 13)
     benchLeftArmSprite.setImage(benchLeftArm)
     benchLeftArmSprite.top = benchBarSprite.bottom
     benchRightArm = image.create(15, benchPlayerSprite.y - benchBarSprite.y)
     benchRightArm.drawLine(image.getDimension(benchRightArm, image.Dimension.Width), 0, 0, image.getDimension(benchRightArm, image.Dimension.Height), 13)
+    benchRightArm.drawLine(image.getDimension(benchRightArm, image.Dimension.Width) + 1, 0, 0, image.getDimension(benchRightArm, image.Dimension.Height) + 1, 13)
+    benchRightArm.drawLine(image.getDimension(benchRightArm, image.Dimension.Width) + 2, 0, 0, image.getDimension(benchRightArm, image.Dimension.Height) + 2, 13)
     benchRightArmSprite.setImage(benchRightArm)
     benchRightArmSprite.top = benchBarSprite.bottom
 }
