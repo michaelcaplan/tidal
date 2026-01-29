@@ -331,6 +331,7 @@ function gameOver () {
         `)
     scene.setBackgroundColor(8)
     playerSelectorSprite = sprites.create(playersSprites[playerSelectorCurrent], SpriteKind.Player)
+    playerSelectorSprite.y = 40
     playerSelectorSprite.setScale(0.5, ScaleAnchor.Middle)
     playerSelectorSprite.startEffect(effects.confetti, 5000)
     animation.runMovementAnimation(
