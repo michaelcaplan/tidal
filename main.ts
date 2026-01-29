@@ -21,7 +21,7 @@ function benchLoop () {
     benchGameLoopCurrent = game.runtime() - benchGameLoopLast
     benchGameLoopHealthCurrent = game.runtime() - benchGameLoopHealthLast
     benchBarHeight = (benchLeftSprite.y + benchRightSprite.y) / 2
-    benchCurrentWeight = 135 + benchLevel * 10
+    benchCurrentWeight = 65 + benchLevel * 10
     if (benchState == "press") {
         if (benchGameLoopHealthCurrent >= 150) {
             benchGameLoopHealthLast = game.runtime()
