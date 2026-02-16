@@ -10,47 +10,22 @@ namespace SpriteKind {
 }
 
 
-
 let splashTitleAnimation: animation.Animation = null
 let splashTitle: Sprite = null
 let splashTidal: Sprite = null
-let gameSelectorSprite: miniMenu.MenuSprite = null
-let playerSelectorName: TextSprite = null
-let playerSelectorTitle: TextSprite = null
-let winMessage = ""
-let playerSelectorSprite: Sprite = null
-let benchHudAction: TextSprite = null
-let benchHudWeight: TextSprite = null
-let benchHudLevel: TextSprite = null
-let benchRightArmSprite: Sprite = null
-let benchLeftArmSprite: Sprite = null
 let splashStart: TextSprite = null
-let playerSelectorCurrent = 0
+
+let gameSelectorSprite: miniMenu.MenuSprite = null
+/**
+ * Hold current game
+ */
 let gameSelected = ""
-let benchBarSprite: Sprite = null
-let benchBarBottom = 0
-let benchMaxTilt = 0
-let benchTilt = 0
-let benchBarMidBottom = 0
-let benchBarMidTop = 0
-let benchGravity = 0
-let benchPlayerSprite: Sprite = null
-let benchBarTop = 0
-let benchStatusBar: StatusBarSprite = null
-let benchState = ""
-let benchLevel = 0
-let benchCurrentWeight = 0
-let benchBarHeight = 0
-let benchGameLoopHealthLast = 0
-let benchGameLoopHealthCurrent = 0
-let benchGameLoopLast = 0
-let benchGameLoopCurrent = 0
-let benchRightSprite: Sprite = null
-let benchLeftSprite: Sprite = null
+
 let playersNames: string[] = []
 let playersSprites: Image[] = []
-let benchLeftArm: Image = null
-let benchRightArm: Image = null
+let playerSelectorName: TextSprite = null
+let playerSelectorTitle: TextSprite = null
+let playerSelectorSprite: Sprite = null
 playersSprites = [
     assets.image`playerBrendan`,
     assets.image`playerCatherine`,
@@ -73,6 +48,44 @@ playersNames = [
     "Elsa",
     "Tobi"
 ]
+/**
+ * Holds the selected player
+ */
+let playerSelectorCurrent = 0
+
+let benchHudAction: TextSprite = null
+let benchHudWeight: TextSprite = null
+let benchHudLevel: TextSprite = null
+let benchRightArmSprite: Sprite = null
+let benchLeftArmSprite: Sprite = null
+let benchBarSprite: Sprite = null
+let benchBarBottom = 0
+let benchMaxTilt = 0
+let benchTilt = 0
+let benchBarMidBottom = 0
+let benchBarMidTop = 0
+let benchGravity = 0
+let benchPlayerSprite: Sprite = null
+let benchBarTop = 0
+let benchStatusBar: StatusBarSprite = null
+let benchState = ""
+let benchLevel = 0
+let benchCurrentWeight = 0
+let benchBarHeight = 0
+let benchGameLoopHealthLast = 0
+let benchGameLoopHealthCurrent = 0
+let benchGameLoopLast = 0
+let benchGameLoopCurrent = 0
+let benchRightSprite: Sprite = null
+let benchLeftSprite: Sprite = null
+let benchLeftArm: Image = null
+let benchRightArm: Image = null
+
+let winMessage = ""
+
+/**
+ * Kick off game
+ */
 splash()
 pauseUntil(() => controller.A.isPressed())
 clearSplash()
