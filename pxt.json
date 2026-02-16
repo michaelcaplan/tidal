@@ -6,7 +6,7 @@
         "animation": "*",
         "arcade-text": "github:microsoft/arcade-text#v1.3.0",
         "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9",
-        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.0.1",
+        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.1.0",
         "Timers": "github:microsoft/arcade-timers#v1.1.0",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
         "pxt-rtttl": "github:pelikhan/pxt-rtttl#v0.0.12",

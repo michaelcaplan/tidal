@@ -15,7 +15,6 @@ let splashTitle: Sprite = null
 let splashTidal: Sprite = null
 let splashStart: TextSprite = null
 
-let gameSelectorSprite: miniMenu.MenuSprite = null
 /**
  * Hold current game
  */
@@ -244,29 +243,31 @@ function playerSelectorAButton() {
  */
 function callGameSelector() {
     scene.setBackgroundImage(assets.image`blank160x120`)
-    gameSelectorSprite = miniMenu.createMenu(
+    let gameSelectorSprite = miniMenu.createMenu(
         miniMenu.createMenuItem("Bench Press", assets.image`gameBench`),
         miniMenu.createMenuItem("Back Squat", assets.image`gameSquat`),
         miniMenu.createMenuItem("Deadlift", assets.image`gameDeadlift`),
-        miniMenu.createMenuItem("")
+        miniMenu.createMenuItem("Quit")
     )
-    gameSelectorSprite.setDimensions(140, 90)
-    gameSelectorSprite.setTitle("Pick Your Lift")
-    gameSelectorSprite.setStyleProperty(miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, 9)
-    gameSelectorSprite.setStyleProperty(miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, 8)
+    miniMenu.setDimensions(gameSelectorSprite, 140, 90)
+    miniMenu.setTitle(gameSelectorSprite, "Pick Your Lift")
+    miniMenu.setStyleProperty(gameSelectorSprite, miniMenu.StyleKind.Default, miniMenu.StyleProperty.Background, 9)
+    miniMenu.setStyleProperty(gameSelectorSprite, miniMenu.StyleKind.Selected, miniMenu.StyleProperty.Background, 8)
     gameSelectorSprite.setPosition(80, 60)
-    gameSelectorSprite.setFrame(assets.image`gameMenuBack`)
-    gameSelectorSprite.onButtonPressed(controller.A, function (selection, selectedIndex) {
+    miniMenu.setFrame(gameSelectorSprite, assets.image`gameMenuBack`)
+    miniMenu.onButtonPressed(gameSelectorSprite, miniMenu.Button.A, function (selection, selectedIndex) {
         // look for a button release to avoice carrying the a button event forward
         pauseUntil(() => !(controller.A.isPressed()))
         gameSelected = selection
-        gameSelectorSprite.close()
+        miniMenu.close(gameSelectorSprite)
         if (selectedIndex == 0) {
             benchStart()
         } else if (selectedIndex == 1) {
             squatStart()
         } else if (selectedIndex == 2) {
             deadliftStart()
+        } else if (selectedIndex == 3) {
+            gameOver()
         }
     })
 }
