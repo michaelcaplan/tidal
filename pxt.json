@@ -16,6 +16,7 @@
     "files": [
         "main.blocks",
         "main.ts",
+        "splash.ts",
         "README.md",
         "assets.json",
         "images.g.jres",
