@@ -34,6 +34,8 @@ class Player implements Game {
      */
     public current = 0
 
+    public coach:number = 0
+
     constructor(gamesEngine: Games) {
         this.gamesEngine = gamesEngine
     }
@@ -59,6 +61,14 @@ class Player implements Game {
 
     get selectedPlayerImage() {
         return this.sprites[this.current]
+    }
+
+    get coatchName() {
+        return this.names[this.coach]
+    }
+
+    get coatchImage() {
+        return this.sprites[this.coach]
     }
 
     protected drawCurrent() {
@@ -100,6 +110,13 @@ class Player implements Game {
         music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         scene.setBackgroundColor(15)
+
+        // set coatch for game
+        this.coach = randint(0, this.sprites.length - 1)
+
+        while (this.coach === this.current) {
+            this.coach = randint(0, this.sprites.length - 1)
+        }
 
         this.gamesEngine.stop(this)
     }
