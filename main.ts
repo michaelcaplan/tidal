@@ -14,6 +14,7 @@ namespace SpriteKind {
 
 namespace StatusBarKind {
     export const Time = StatusBarKind.create()
+    export const SquatPower = StatusBarKind.create()
 }
 
 let splashObj = new Splash()

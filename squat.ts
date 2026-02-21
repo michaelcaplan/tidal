@@ -26,7 +26,7 @@ class Squat implements Game {
     public start() {
         
         // game over
-        statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
+        statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
             if (this.name != "Back Squat") {
                 return
             }
@@ -35,13 +35,9 @@ class Squat implements Game {
         })
 
         // lift success
-        statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
-            if (this.name != "Back Squat") {
-                return
-            }
-            
+        statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
             this.state = "win"
-            this.score = this.currentWeight
+            this.score += this.currentWeight
             info.changeScoreBy(this.currentWeight)
             game.splash("An Easy " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
             this.level += 1
@@ -49,17 +45,11 @@ class Squat implements Game {
             this.state = "decent"
         })
 
-        statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 25, (status) => {
-            if (this.name != "Back Squat") {
-                return
-            }
+        statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 25, (status) => {
             this.powerBar.setColor(4, 14)
         })
 
-        statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 25, (status) => {
-            if (this.name != "Back Squat") {
-                return
-            }
+        statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 25, (status) => {
             this.powerBar.setColor(5, 14)
         })
 
@@ -70,20 +60,19 @@ class Squat implements Game {
         this.state = "tutorial"
 
         this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
+        this.coatchSprite.setPosition(50, 60)
 
         story.startCutscene(() => {
-            this.coatchSprite.setPosition(50, 70)
-            let coatch = this.gamesEngine.player.coatchName + " says: ";
-            let tutorialText = "Squat time! Press A to unrack.\r\n\r\n"
-            tutorialText += "When you hit the bottom of your squat, press A to keep the green bar lined up with the bobbing weight.\r\n\r\n"
-            tutorialText += "This will push your barbell up.\r\n\r\n"
-            tutorialText += "Breath deep and keep that core engaged!"
+            let coatch = "Coach " + this.gamesEngine.player.coatchName + ":";
+            let tutorialText = "Squat time! Here are some tips.  \r\n\r\n 1) Press A to unrack when prompted."
             story.printCharacterText(tutorialText, coatch)
-            sprites.destroy(this.coatchSprite)
-            this.setGym()
-            this.state = "racked"
-            game.splash("A to unrack")
-            this.state = "decent"
+            tutorialText = "2) At the the bottom of your squat, press A to keep the green bar lined up with the bobbing weight."
+            story.printCharacterText(tutorialText, coatch)
+            tutorialText = "This will push your barbell up."
+            story.printCharacterText(tutorialText, coatch)
+            tutorialText = "Breath deep and keep that core engaged!"
+            story.printCharacterText(tutorialText, coatch)
+            this.state = "start"
         })
     }
 
@@ -91,11 +80,9 @@ class Squat implements Game {
         if (this.state === "lifting") {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
-            // story.cancelCurrentCutscene()
-            // sprites.destroy(this.coatchSprite)
-            // this.state = "racked"
-            // game.splash("A to unrack")
-            // this.state = "decent"
+            story.cancelCurrentCutscene()
+            sprites.destroy(this.coatchSprite)
+            this.state = "start"
         }
     }
     
@@ -124,6 +111,13 @@ class Squat implements Game {
             this.bobBobber()
         } else if (this.state === "decent") {
             this.moveWeight()
+        } else if (this.state === "start") {
+            sprites.destroy(this.coatchSprite)
+            this.setGym()
+            this.state = "racked"
+        } else if (this.state === "racked") {
+            game.splash("A to unrack")
+            this.state = "decent"
         }
 
         this.drawHUD()
@@ -172,7 +166,7 @@ class Squat implements Game {
 
         this.drawBar(this.level)
 
-        this.powerBar = statusbars.create(5, 100, StatusBarKind.Health)
+        this.powerBar = statusbars.create(5, 100, StatusBarKind.SquatPower)
         this.powerBar.setPosition(150, 60)
         this.powerBar.setColor(4, 14)
         this.powerBar.max = 100
@@ -203,9 +197,9 @@ class Squat implements Game {
 
         if (this.score > 0) {
             if (this.gamesEngine.leftToPlay() > 0) {
-                game.splash("You Benched " + this.score + "LBs!", "Let's try anther lift.")
+                game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
-                game.splash("You Benched " + this.score + "LBs!", "Time for a coffee break!")
+                game.splash("You Benched " + this.score + "  points!", "Time for a coffee break!")
             }
         } else {
             game.splash("Oh common!", "Time to get training!")

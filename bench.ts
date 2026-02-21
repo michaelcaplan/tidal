@@ -10,6 +10,7 @@ class Bench implements Game {
     leftArmSprite: Sprite = null
     barSprite: Sprite = null
     playerSprite: Sprite = null
+    coatchSprite: Sprite = null
     statusBar: StatusBarSprite = null
     state = ""
     level = 0
@@ -38,10 +39,15 @@ class Bench implements Game {
 
     public start() {
         music.play(music.createSong(assets.song`benchTunes`), music.PlaybackMode.LoopingInBackground)
-        scene.setBackgroundImage(assets.image`benchBackground`)
 
-        this.state = "racked"
+        this.state = "tutorial"
         this.level = 1
+
+        this.tutorial()
+    }
+
+    protected setupGym() {
+        scene.setBackgroundImage(assets.image`benchBackground`)
 
         this.playerSprite = sprites.create(assets.image`benchPlayer`, SpriteKind.Player)
         this.playerSprite.setPosition(80, 70)
@@ -79,6 +85,28 @@ class Bench implements Game {
         this.hudAction.setPosition(80, 10)
     }
 
+
+    protected tutorial() {
+        this.state = "tutorial"
+
+        this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
+        this.coatchSprite.setPosition(50, 60)
+
+        story.startCutscene(() => {
+            let coatch = "Coach " + this.gamesEngine.player.coatchName + ":";
+            let tutorialText = "Bench press time! Here are some tips.  \r\n\r\n 1) Press A to unrack when prompted."
+            story.printCharacterText(tutorialText, coatch)
+
+            tutorialText = "2) When you hit the bottom of your decent, press A+B as fast as you can to push up with both arms."
+            story.printCharacterText(tutorialText, coatch)
+
+            tutorialText = "Arch that back and keep those feet planted!"
+            story.printCharacterText(tutorialText, coatch)
+
+            this.state = "start"
+        })
+    }
+
     public handleAEvent() {
         if (this.state == "press") {
             if (this.leftSprite.y > this.barTop) {
@@ -96,6 +124,10 @@ class Bench implements Game {
             music.play(music.createSoundEffect(WaveShape.Noise, 3900, 3500, 255, 0, 10, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
             this.leftSprite.y += 5
             this.rightSprite.y += 5
+        } else if (this.state == "tutorial") {
+            story.cancelCurrentCutscene()
+            sprites.destroy(this.coatchSprite)
+            this.state = "start"
         }
     }
     
@@ -118,79 +150,87 @@ class Bench implements Game {
     }
 
     public handleGameLoop() {
-        if (!(this.leftSprite) || !(this.rightSprite)) {
-            return
+        if (this.leftSprite && this.rightSprite) {
+            let gameLoopCurrent = game.runtime() - this.gameLoopLast
+            let gameLoopHealthCurrent = game.runtime() - this.gameLoopHealthLast
+            this.barHeight = (this.leftSprite.y + this.rightSprite.y) / 2
+            this.currentWeight = 65 + this.level * 10
+
+            if (this.state == "press") {
+                if (gameLoopHealthCurrent >= 150) {
+                    this.gameLoopHealthLast = game.runtime()
+                    this.statusBar.value += -1
+                    if (this.statusBar.value == 0) {
+                        this.stop()
+                    }
+                }
+                if (gameLoopCurrent >= 1000) {
+
+                    this.gameLoopLast = game.runtime()
+                    
+                    if (this.leftSprite.y <= this.barTop && this.rightSprite.y <= this.barTop) {
+                        this.state = "pressed"
+                        this.rightSprite.y = this.barTop
+                        this.leftSprite.y = this.barTop
+                        effects.clearParticles(this.playerSprite)
+                        this.updateHud()
+                    }
+                    
+                    let gravity = this.currentWeight * 0.01
+                    
+                    // Mid point stick
+                    if (this.barHeight > this.barMidTop && this.barHeight < this.barMidBottom) {
+                        gravity = gravity * 1.5
+                        this.playerSprite.startEffect(effects.spray)
+                    }
+                    
+                    this.tilt = Math.abs(this.leftSprite.y - this.rightSprite.y)
+                    this.maxTilt = 20 - this.currentWeight / 20
+                    
+                    if (this.tilt > this.maxTilt) {
+                        // Severe penalty for uneven lifting
+                        gravity = gravity * 2
+                        this.playerSprite.startEffect(effects.spray)
+                    }
+                    
+                    if (this.leftSprite.y < this.barBottom) {
+                        this.leftSprite.y = this.leftSprite.y + gravity
+                    } else {
+                        this.leftSprite.y = this.barBottom
+                    }
+
+                    if (this.rightSprite.y < this.barBottom) {
+                        this.rightSprite.y = this.rightSprite.y + gravity
+                    } else {
+                        this.rightSprite.y = this.barBottom
+                    }
+                }
+
+            } else if (this.state == "decend") {
+
+                this.leftSprite.vy = 60
+                this.rightSprite.vy = 60
+                if (this.barHeight >= this.barBottom) {
+                    this.leftSprite.vy = 0
+                    this.leftSprite.y = this.barBottom
+                    this.rightSprite.vy = 0
+                    this.rightSprite.y = this.barBottom
+                    this.state = "press"
+                }
+            }
+
+            this.updateBar()
+            this.updateArms()
+            this.updateHud()
         }
         
-        let gameLoopCurrent = game.runtime() - this.gameLoopLast
-        let gameLoopHealthCurrent = game.runtime() - this.gameLoopHealthLast
-        this.barHeight = (this.leftSprite.y + this.rightSprite.y) / 2
-        this.currentWeight = 65 + this.level * 10
-        if (this.state == "press") {
-            if (gameLoopHealthCurrent >= 150) {
-                this.gameLoopHealthLast = game.runtime()
-                this.statusBar.value += -1
-                if (this.statusBar.value == 0) {
-                    this.stop()
-                }
-            }
-            if (gameLoopCurrent >= 1000) {
-
-                this.gameLoopLast = game.runtime()
-                
-                if (this.leftSprite.y <= this.barTop && this.rightSprite.y <= this.barTop) {
-                    this.state = "pressed"
-                    this.rightSprite.y = this.barTop
-                    this.leftSprite.y = this.barTop
-                    effects.clearParticles(this.playerSprite)
-                    this.updateHud()
-                }
-                
-                let gravity = this.currentWeight * 0.01
-                
-                // Mid point stick
-                if (this.barHeight > this.barMidTop && this.barHeight < this.barMidBottom) {
-                    gravity = gravity * 1.5
-                    this.playerSprite.startEffect(effects.spray)
-                }
-                
-                this.tilt = Math.abs(this.leftSprite.y - this.rightSprite.y)
-                this.maxTilt = 20 - this.currentWeight / 20
-                
-                if (this.tilt > this.maxTilt) {
-                    // Severe penalty for uneven lifting
-                    gravity = gravity * 2
-                    this.playerSprite.startEffect(effects.spray)
-                }
-                
-                if (this.leftSprite.y < this.barBottom) {
-                    this.leftSprite.y = this.leftSprite.y + gravity
-                } else {
-                    this.leftSprite.y = this.barBottom
-                }
-
-                if (this.rightSprite.y < this.barBottom) {
-                    this.rightSprite.y = this.rightSprite.y + gravity
-                } else {
-                    this.rightSprite.y = this.barBottom
-                }
-            }
-        } else if (this.state == "decend") {
-
-            this.leftSprite.vy = 60
-            this.rightSprite.vy = 60
-            if (this.barHeight >= this.barBottom) {
-                this.leftSprite.vy = 0
-                this.leftSprite.y = this.barBottom
-                this.rightSprite.vy = 0
-                this.rightSprite.y = this.barBottom
-                this.state = "press"
-            }
+        if (this.state === "start") {
+            timer.throttle("setupGym", 500, () => {
+                sprites.destroy(this.coatchSprite)
+                this.setupGym()
+                this.state = "racked"
+            })
         }
-
-        this.updateBar()
-        this.updateArms()
-        this.updateHud()
     }
 
 
