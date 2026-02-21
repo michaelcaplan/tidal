@@ -27,11 +27,19 @@ class Squat implements Game {
         
         // game over
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
+            if (this.name != "Back Squat") {
+                return
+            }
+
             this.stop()
         })
 
         // lift success
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
+            if (this.name != "Back Squat") {
+                return
+            }
+            
             this.state = "win"
             this.score = this.currentWeight
             info.changeScoreBy(this.currentWeight)
@@ -42,10 +50,16 @@ class Squat implements Game {
         })
 
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 25, (status) => {
+            if (this.name != "Back Squat") {
+                return
+            }
             this.powerBar.setColor(4, 14)
         })
 
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 25, (status) => {
+            if (this.name != "Back Squat") {
+                return
+            }
             this.powerBar.setColor(5, 14)
         })
 

@@ -146,7 +146,7 @@ class Games {
 
         scene.setBackgroundImage(assets.image`blank160x120`)
 
-        if (this.gamesMenu.length == 1) {
+        if (this.leftToPlay() == 0) {
             // game over
             this.games["Coffee Break"].start()
             return
