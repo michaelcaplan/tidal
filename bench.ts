@@ -260,22 +260,25 @@ class Bench implements Game {
 
 
     protected stop() {
+        this.state = "lose"
         effects.clearParticles(this.playerSprite)
         sprites.destroyAllSpritesOfKind(SpriteKind.benchBar)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroyAllSpritesOfKind(SpriteKind.Text)
 
+        music.stopAllSounds()
+        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
+
         if (this.score > 0) {
-            if (this.gamesEngine.leftToPlay() > 1) {
-                game.splash("You Benched " + this.score + "LBs!", "Let's try anther lift.")
+            if (this.gamesEngine.leftToPlay() > 0) {
+                game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
-                game.splash("You Benched " + this.score + "LBs!", "Time for a coffee break!")
+                game.splash("You Benched " + this.score + " points!", "Time for a coffee break!")
             }
         } else {
             game.splash("Oh common!", "Time to get training!")
         }
-        music.stopAllSounds()
-
+ 
         this.gamesEngine.stop(this)
     }
 }

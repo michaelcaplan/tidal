@@ -7,12 +7,16 @@ class Squat implements Game {
 
     protected state = "tutorial"
     protected barPicture: Image = null
-    protected weightSprite: Sprite = null
+    protected bobSprite: Sprite = null
     protected barSprite: Sprite = null
     protected powerBar: StatusBarSprite = null
     protected level = 0
     protected coatchSprite: Sprite = null
     protected score = 0
+    protected weightBottom = 80
+    protected weightTop = 35
+    protected weightSprite: Sprite = null
+    protected currentWeight = 0
 
 
     constructor(gamesEngine: Games) {
@@ -28,12 +32,13 @@ class Squat implements Game {
 
         // lift success
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
-            sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
-            sprites.destroyAllSpritesOfKind(SpriteKind.Player)
-            sprites.destroy(this.powerBar)
+            this.state = "win"
+            this.score = this.currentWeight
+            info.changeScoreBy(this.currentWeight)
+            game.splash("An Easy " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
             this.level += 1
             this.setGym()
-            this.state = "racked"
+            this.state = "decent"
         })
 
         statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 25, (status) => {
@@ -44,7 +49,6 @@ class Squat implements Game {
             this.powerBar.setColor(5, 14)
         })
 
-        this.setGym()
         this.tutorial()
     }
 
@@ -54,13 +58,18 @@ class Squat implements Game {
         this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
 
         story.startCutscene(() => {
-            this.coatchSprite.setPosition(70, 70)
+            this.coatchSprite.setPosition(50, 70)
             let coatch = this.gamesEngine.player.coatchName + " says: ";
-            let tutorialText = "Time to learn how to squat! Press A to lift the bar, and try to keep it steady. If you can get the power bar all the way up, you'll level up and get a heavier weight!"
+            let tutorialText = "Squat time! Press A to unrack.\r\n\r\n"
+            tutorialText += "When you hit the bottom of your squat, press A to keep the green bar lined up with the bobbing weight.\r\n\r\n"
+            tutorialText += "This will push your barbell up.\r\n\r\n"
+            tutorialText += "Breath deep and keep that core engaged!"
             story.printCharacterText(tutorialText, coatch)
             sprites.destroy(this.coatchSprite)
+            this.setGym()
             this.state = "racked"
             game.splash("A to unrack")
+            this.state = "decent"
         })
     }
 
@@ -68,12 +77,11 @@ class Squat implements Game {
         if (this.state === "lifting") {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
-            story.cancelAllCutscenes()
-            sprites.destroy(this.coatchSprite)
-            this.state = "racked"
-            game.splash("A to unrack")
-        } else if (this.state = "racked") {
-            this.squat()
+            // story.cancelCurrentCutscene()
+            // sprites.destroy(this.coatchSprite)
+            // this.state = "racked"
+            // game.splash("A to unrack")
+            // this.state = "decent"
         }
     }
     
@@ -91,37 +99,62 @@ class Squat implements Game {
 
     public handleGameLoop() {
         if (this.state === "lifting") {
-            game.splash("Keep it steady!")
-            if (this.barSprite.overlapsWith(this.weightSprite)) {
+            if (this.barSprite.overlapsWith(this.bobSprite)) {
                 this.powerBar.value += 1
                 this.barPicture.fill(7)
             } else {
                 this.powerBar.value += -1
                 this.barPicture.fill(6)
             }
-            this.bobWeight()
+            this.moveWeight()
+            this.bobBobber()
+        } else if (this.state === "decent") {
+            this.moveWeight()
         }
+
+        this.drawHUD()
     }
 
-    protected squat() {
-        pause(2000)
-        this.state = "lifting"
-    }
+    protected moveWeight() {
+        if (this.state === "decent") {
+            this.weightSprite.ay = 50
+            if (this.weightSprite.y >= this.weightBottom) {
+                this.weightSprite.ay = 0
+                this.weightSprite.setPosition(70, this.weightBottom)
+                this.state = "lifting"
+                this.barSprite.ay = 100
+            }
+        } else if (this.state === "lifting") {
+            let targetY = this.weightBottom - Math.ceil((this.weightBottom - this.weightTop) * (this.powerBar.value / 100))
 
-    protected bobWeight () {
-        if (Math.percentChance(this.level * 2)) {
-            if (Math.percentChance(50)) {
-                this.weightSprite.y = Math.constrain(this.weightSprite.y + Math.constrain(randint(0, this.level), 0, 6), 20, 100)
-            } else {
-                this.weightSprite.y = Math.constrain(this.weightSprite.y + Math.constrain(randint(0, this.level), 0, 6) * -1, 20, 100)
+            if (targetY < this.weightSprite.y) {
+                this.weightSprite.y = targetY
             }
         }
     }
 
+    protected bobBobber () {
+        if (Math.percentChance(this.level * 2)) {
+            if (Math.percentChance(50)) {
+                this.bobSprite.y = Math.constrain(this.bobSprite.y + Math.constrain(randint(0, this.level), 0, 6), 20, 100)
+            } else {
+                this.bobSprite.y = Math.constrain(this.bobSprite.y + Math.constrain(randint(0, this.level), 0, 6) * -1, 20, 100)
+            }
+        }
+    }
+
+    protected drawHUD() {
+
+    }
+
     protected setGym() {
-        this.weightSprite = sprites.create(assets.image`squatWeight`, SpriteKind.Lift)
-        this.weightSprite.setPosition(140, 60)
-        this.weightSprite.z = 10
+        sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+        sprites.destroy(this.powerBar)
+
+        this.bobSprite = sprites.create(assets.image`squatWeight`, SpriteKind.Lift)
+        this.bobSprite.setPosition(140, 60)
+        this.bobSprite.z = 10
 
         this.drawBar(this.level)
 
@@ -129,7 +162,12 @@ class Squat implements Game {
         this.powerBar.setPosition(150, 60)
         this.powerBar.setColor(4, 14)
         this.powerBar.max = 100
-        this.powerBar.value = 20
+        this.powerBar.value = 10
+
+        this.weightSprite = sprites.create(assets.image`benchBar`, SpriteKind.Lift)
+        this.weightSprite.setPosition(70, this.weightTop)
+
+        this.currentWeight = 65 + this.level * 10
     }
 
     protected drawBar (level: number) {
@@ -137,16 +175,20 @@ class Squat implements Game {
         this.barPicture.fill(7)
         this.barSprite = sprites.create(this.barPicture, SpriteKind.Player)
         this.barSprite.setPosition(140, 60)
-        this.barSprite.ay = 100
     }
 
     protected stop() {
-        
+        this.state = "lose"
         sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroy(this.powerBar)
 
+        music.stopAllSounds()
+        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
+
+
         if (this.score > 0) {
-            if (this.gamesEngine.leftToPlay() > 1) {
+            if (this.gamesEngine.leftToPlay() > 0) {
                 game.splash("You Benched " + this.score + "LBs!", "Let's try anther lift.")
             } else {
                 game.splash("You Benched " + this.score + "LBs!", "Time for a coffee break!")
@@ -154,7 +196,7 @@ class Squat implements Game {
         } else {
             game.splash("Oh common!", "Time to get training!")
         }
-        music.stopAllSounds()
+        
 
         this.gamesEngine.stop(this)
     }
