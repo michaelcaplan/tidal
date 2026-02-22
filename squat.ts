@@ -39,7 +39,7 @@ class Squat implements Game {
             this.state = "win"
             this.score += this.currentWeight
             info.changeScoreBy(this.currentWeight)
-            game.splash("An Easy " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
+            game.splash(this.gamesEngine.saying + " " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
             this.level += 1
             this.setGym()
             this.state = "decent"
@@ -200,7 +200,7 @@ class Squat implements Game {
             if (this.gamesEngine.leftToPlay() > 0) {
                 game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
-                game.splash("You Benched " + this.score + "  points!", "Time for a coffee break!")
+                game.splash("You Benched " + this.score + " points!", "Time for a coffee break!")
             }
         } else {
             game.splash("Oh common!", "Time to get training!")

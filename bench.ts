@@ -23,13 +23,11 @@ class Bench implements Game {
     score = 0
     tilt = 0
     maxTilt = 0
-
+    gymSet: boolean = false
     barTop = 35
     barMidTop = 40
     barMidBottom = 50
     barBottom = 60
- 
-
 
     protected gamesEngine: Games = null
 
@@ -47,6 +45,10 @@ class Bench implements Game {
     }
 
     protected setupGym() {
+        if (this.gymSet) {
+            return
+        }
+        this.gymSet = true
         scene.setBackgroundImage(assets.image`benchBackground`)
 
         this.playerSprite = sprites.create(assets.image`benchPlayer`, SpriteKind.Player)
@@ -225,7 +227,7 @@ class Bench implements Game {
         }
         
         if (this.state === "start") {
-            timer.throttle("setupGym", 500, () => {
+            timer.throttle("setupGym", 2000, () => {
                 sprites.destroy(this.coatchSprite)
                 this.setupGym()
                 this.state = "racked"
@@ -291,7 +293,7 @@ class Bench implements Game {
             music.play(music.stringPlayable("E D G F B A C5 B ", 260), music.PlaybackMode.UntilDone)
             info.changeScoreBy(this.currentWeight)
             this.score += this.currentWeight
-            game.splash("An Easy " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
+            game.splash(this.gamesEngine.saying + " " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
             this.state = "racked"
             this.level += 1
             this.statusBar.value = 100

@@ -1,7 +1,21 @@
 class Games {
     private currentGame: string = null
     private games: { [key: string]: Game } = {}
-    private gamesMenu: miniMenu.MenuItem [] = []
+    private gamesMenu: miniMenu.MenuItem[] = []
+    
+    protected sayings: Array<string> = [
+        "An easy",
+        "A steazy",
+        "A breezy",
+        "A powerful",
+        "A mighty",
+        "A clean",
+        "A mean",
+        "A beefy",
+        "A spicy",
+        "An epic",
+        "A legendary"
+    ]
 
     public player: Player = null
 
@@ -50,6 +64,10 @@ class Games {
 
     get game() {
         return this.currentGame
+    }
+
+    get saying() {
+        return this.sayings[randint(0, this.sayings.length - 1)]
     }
 
     /**
