@@ -5,18 +5,22 @@ class Squat implements Game {
 
     protected gamesEngine: Games = null
 
+    protected hudAction: TextSprite = null
+    protected hudWeight: TextSprite = null
+    protected hudLevel: TextSprite = null
     protected state = "tutorial"
     protected barPicture: Image = null
     protected bobSprite: Sprite = null
     protected barSprite: Sprite = null
     protected powerBar: StatusBarSprite = null
-    protected level = 0
+    protected level = 1
     protected coatchSprite: Sprite = null
     protected score = 0
     protected weightBottom = 80
     protected weightTop = 35
     protected weightSprite: Sprite = null
     protected currentWeight = 0
+    protected ticksOver:number = 0
 
 
     constructor(gamesEngine: Games) {
@@ -124,6 +128,52 @@ class Squat implements Game {
         this.drawHUD()
     }
 
+    /**
+     * Draw squat heads up display
+     */
+    protected drawHUD() {
+
+        if (this.hudLevel) {
+            sprites.destroy(this.hudLevel)
+        }
+
+        if (this.hudWeight) {
+            sprites.destroy(this.hudWeight)
+        }
+
+        if (this.hudAction) {
+            sprites.destroy(this.hudAction)
+        }
+        
+        this.hudLevel = textsprite.create("Level " + this.level, 15, 0)
+        this.hudLevel.setPosition(30, 110)
+
+        this.hudWeight = textsprite.create("Weight " + this.currentWeight + "LBs", 15, 0)
+        this.hudWeight.setPosition(110, 110)
+
+        if (this.state == "racked") {
+            this.hudAction = textsprite.create("Press A To Unrack", 15, 0)
+            this.hudAction.setPosition(80, 10)
+        } else if (this.state == "lifting") {
+            if (!this.barSprite.overlapsWith(this.bobSprite)) {
+                this.hudAction = textsprite.create("Keep It Aligned! (A)", 15, 0)
+                this.hudAction.setPosition(80, 10)
+            } else {
+                this.hudAction = textsprite.create("Keep It Steady! (A)", 15, 0)
+                this.hudAction.setPosition(80, 10)
+            }
+        } else if (this.state == "decent") {
+            this.hudAction = textsprite.create("Squatting", 15, 0)
+            this.hudAction.setPosition(80, 10)
+        } else if (this.state == "win") {
+            this.hudAction = textsprite.create("Yes!!!", 15, 0)
+            this.hudAction.setPosition(80, 10)
+        } else if (this.state == "loose") {
+            this.hudAction = textsprite.create("Good Try", 15, 0)
+            this.hudAction.setPosition(80, 10)
+        }
+    }
+
     protected moveWeight() {
         if (this.state === "decent") {
             this.weightSprite.ay = 50
@@ -153,28 +203,24 @@ class Squat implements Game {
         }
     }
 
-    protected drawHUD() {
-
-    }
-
     protected setGym() {
         sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroy(this.powerBar)
 
-        this.bobSprite = sprites.create(assets.image`squatWeight`, SpriteKind.Lift)
+        this.bobSprite =sprites.create(assets.image`squatWeight`, SpriteKind.Lift)
         this.bobSprite.setPosition(140, 60)
         this.bobSprite.z = 10
 
         this.drawBar(this.level)
 
-        this.powerBar = statusbars.create(5, 100, StatusBarKind.SquatPower)
+        this.powerBar = statusbars.create(5, 80, StatusBarKind.SquatPower)
         this.powerBar.setPosition(150, 60)
         this.powerBar.setColor(4, 14)
         this.powerBar.max = 100
         this.powerBar.value = 10
 
-        this.weightSprite = sprites.create(assets.image`benchBar`, SpriteKind.Lift)
+        this.weightSprite = sprites.create(assets.image`squatBar`, SpriteKind.Lift)
         this.weightSprite.setPosition(70, this.weightTop)
 
         this.currentWeight = 65 + this.level * 10

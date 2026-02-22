@@ -311,7 +311,7 @@ class Bench implements Game {
         music.stopAllSounds()
 
         if (this.score > 0) {
-            music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
+            music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
             if (this.gamesEngine.leftToPlay() > 0) {
                 game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
