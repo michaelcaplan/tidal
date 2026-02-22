@@ -24,7 +24,8 @@ class Squat implements Game {
     }
 
     public start() {
-        
+        music.play(music.createSong(assets.song`thunderstruck`), music.PlaybackMode.LoopingInBackground)
+
         // game over
         statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
             if (this.name != "Back Squat") {
@@ -193,16 +194,17 @@ class Squat implements Game {
         sprites.destroy(this.powerBar)
 
         music.stopAllSounds()
-        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
 
 
         if (this.score > 0) {
+            music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
             if (this.gamesEngine.leftToPlay() > 0) {
                 game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
                 game.splash("You Benched " + this.score + " points!", "Time for a coffee break!")
             }
         } else {
+            music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
             game.splash("Oh common!", "Time to get training!")
         }
         
