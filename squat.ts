@@ -103,11 +103,11 @@ class Squat implements Game {
             if (this.barSprite.overlapsWith(this.bobSprite)) {
                 this.powerBar.value += 1
                 this.barPicture.fill(7)
+                this.moveWeight()
             } else {
                 this.powerBar.value += -1
                 this.barPicture.fill(6)
             }
-            this.moveWeight()
             this.bobBobber()
         } else if (this.state === "decent") {
             this.moveWeight()
@@ -128,6 +128,7 @@ class Squat implements Game {
             this.weightSprite.ay = 50
             if (this.weightSprite.y >= this.weightBottom) {
                 this.weightSprite.ay = 0
+                this.weightSprite.vy = 0
                 this.weightSprite.setPosition(70, this.weightBottom)
                 this.state = "lifting"
                 this.barSprite.ay = 100

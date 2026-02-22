@@ -9,7 +9,6 @@
         "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.1.0",
         "Timers": "github:microsoft/arcade-timers#v1.1.0",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
-        "pxt-rtttl": "github:pelikhan/pxt-rtttl#v0.0.12",
         "arcade-particle-effects": "github:jwunderl/arcade-particle-effects#v0.0.2",
         "arcade-story": "github:microsoft/arcade-storytelling#v1.0.3"
     },
@@ -36,7 +35,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.0.5",
+        "target": "4.0.7",
         "targetId": "arcade"
     },
     "supportedTargets": [
