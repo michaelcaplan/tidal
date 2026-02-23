@@ -78,13 +78,6 @@ class Bench implements Game {
         this.barSprite = sprites.create(assets.image`benchBar`, SpriteKind.benchBar)
         this.barSprite.setPosition(80, 40)
         this.barSprite.z = -10
-        
-        this.hudLevel = textsprite.create("Entering Level", 15, 0)
-        this.hudLevel.setPosition(50, 110)
-        this.hudWeight = textsprite.create("Weight ?", 15, 0)
-        this.hudWeight.setPosition(100, 110)
-        this.hudAction = textsprite.create("Ready?", 15, 0)
-        this.hudAction.setPosition(80, 10)
     }
 
 
@@ -267,29 +260,43 @@ class Bench implements Game {
      * Draw bench heads up display
      */
     protected updateHud() {
-        this.hudLevel.setText("Level " + this.level)
-        this.hudWeight.setText("Weight " + this.currentWeight + "LBs")
+        if (this.state == "lose") {
+            return
+        }
+        sprites.destroy(this.hudLevel)
+        sprites.destroy(this.hudWeight)
+        sprites.destroy(this.hudAction)
+
+        this.hudLevel = textsprite.create("Level " + this.level, 15, 0)
+        this.hudLevel.setPosition(30, 110)
+
+        this.hudWeight = textsprite.create("Weight " + this.currentWeight + "LBs", 15, 0)
+        this.hudWeight.setPosition(110, 110)
+
         if (this.state == "racked") {
-            this.hudAction.setText("Press A To Unrack")
+            this.hudAction = textsprite.create("Press A To Unrack", 15, 0)
             this.hudAction.setPosition(80, 10)
         } else if (this.state == "press") {
             if (this.tilt > this.maxTilt) {
-                this.hudAction.setText("UNEVEN!!!!")
+                this.hudAction = textsprite.create("UNEVEN!!!!", 15, 0)
                 this.hudAction.setPosition(80, 10)
             } else {
-                this.hudAction.setText("PUSH!! (A+B)")
+                this.hudAction = textsprite.create("PUSH!! (A+B)", 15, 0)
                 this.hudAction.setPosition(80, 10)
             }
         } else if (this.state == "unracked") {
-            this.hudAction.setText("Press A To Descend")
+            this.hudAction = textsprite.create("Press A To Descend", 15, 0)
             this.hudAction.setPosition(80, 10)
         } else if (this.state == "unracked") {
-            this.hudAction.setText("DESCENDING!")
+            this.hudAction = textsprite.create("DESCENDING!", 15, 0)
             this.hudAction.setPosition(80, 10)
         } else if (this.state == "pressed") {
-            this.hudAction.setText("Press A to Re-Rack")
+            this.hudAction = textsprite.create("Press A to Re-Rack", 15, 0)
             this.hudAction.setPosition(80, 10)
         } else if (this.state == "done") {
+            this.hudAction = textsprite.create("BAM!!!", 15, 0)
+            this.hudAction.setPosition(80, 10)
+
             music.play(music.stringPlayable("E D G F B A C5 B ", 260), music.PlaybackMode.UntilDone)
             info.changeScoreBy(this.currentWeight)
             this.score += this.currentWeight
@@ -307,6 +314,9 @@ class Bench implements Game {
         sprites.destroyAllSpritesOfKind(SpriteKind.benchBar)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroyAllSpritesOfKind(SpriteKind.Text)
+        sprites.destroy(this.hudLevel)
+        sprites.destroy(this.hudWeight)
+        sprites.destroy(this.hudAction)
 
         music.stopAllSounds()
 

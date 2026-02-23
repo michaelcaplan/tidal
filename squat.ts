@@ -35,8 +35,13 @@ class Squat implements Game {
             if (this.name != "Back Squat") {
                 return
             }
-
-            this.stop()
+            if (this.ticksOver === 0) {
+                this.ticksOver = game.runtime()
+            }
+            
+            if ((game.runtime() - this.ticksOver) >= 1000) {
+                this.stop()
+            }
         })
 
         // lift success
@@ -48,6 +53,7 @@ class Squat implements Game {
             this.level += 1
             this.setGym()
             this.state = "decent"
+            this.ticksOver = 0
         })
 
         statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 25, (status) => {
@@ -56,6 +62,7 @@ class Squat implements Game {
 
         statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 25, (status) => {
             this.powerBar.setColor(5, 14)
+            this.ticksOver = 0
         })
 
         this.tutorial()
@@ -132,6 +139,9 @@ class Squat implements Game {
      * Draw squat heads up display
      */
     protected drawHUD() {
+        if (this.state == "lose") {
+            return
+        }
 
         if (this.hudLevel) {
             sprites.destroy(this.hudLevel)
@@ -238,9 +248,11 @@ class Squat implements Game {
         sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroy(this.powerBar)
+        sprites.destroy(this.hudLevel)
+        sprites.destroy(this.hudWeight)
+        sprites.destroy(this.hudAction)
 
         music.stopAllSounds()
-
 
         if (this.score > 0) {
             music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
