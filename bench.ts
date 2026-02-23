@@ -321,12 +321,17 @@ class Bench implements Game {
         music.stopAllSounds()
 
         if (this.score > 0) {
+            this.hudAction = textsprite.create("GOOD ATTEMPT!", 15, 0)
+            this.hudAction.setPosition(80, 10)
+
             music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
             if (this.gamesEngine.leftToPlay() > 0) {
                 game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
             } else {
                 game.splash("You Benched " + this.score + " points!", "Time for a coffee break!")
             }
+
+            sprites.destroy(this.hudAction)
         } else {
             music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
             game.splash("Oh common!", "Time to get training!")
