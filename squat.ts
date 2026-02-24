@@ -15,6 +15,7 @@ class Squat implements Game {
     protected powerBar: StatusBarSprite = null
     protected level = 1
     protected coatchSprite: Sprite = null
+    protected arrowSprite: Sprite = null
     protected score = 0
     protected weightBottom = 80
     protected weightTop = 35
@@ -23,6 +24,7 @@ class Squat implements Game {
     protected currentWeight = 0
     protected ticksOver:number = 0
     protected sweating: boolean = false
+    protected cancelTutorial: boolean = false
 
 
     constructor(gamesEngine: Games) {
@@ -73,6 +75,7 @@ class Squat implements Game {
             this.ticksOver = 0
         })
 
+        this.setGym()
         this.tutorial()
     }
 
@@ -80,22 +83,44 @@ class Squat implements Game {
         this.state = "tutorial"
 
         this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
-        this.coatchSprite.setPosition(50, 60)
+        this.coatchSprite.setPosition(-20, 100)
+
+        this.arrowSprite = sprites.create(assets.image`rightArrow`, SpriteKind.Coatch)
+        this.arrowSprite.setPosition(-20, 100)
 
         story.startCutscene(() => {
-            let coatch = "Coach " + this.gamesEngine.player.coatchName + ":";
-            
-            let tutorialText = "Squat time! Here are some tips.  \r\n\r\n 1) Press A to unrack when prompted."
-            story.printCharacterText(tutorialText, coatch)
-            
-            tutorialText = "2) At the the bottom of your squat, press A to keep the green bar lined up with the bobbing weight."
-            story.printCharacterText(tutorialText, coatch)
-            
-            tutorialText = "This will push your barbell up."
-            story.printCharacterText(tutorialText, coatch)
-            
-            tutorialText = "Breath deep and keep that core engaged!"
-            story.printCharacterText(tutorialText, coatch)
+            if (!this.cancelTutorial) {
+                story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
+            }
+
+            if (!this.cancelTutorial) {       
+                story.spriteSayText(this.coatchSprite, "Squat time! Here are some tips.")
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteSayText(this.coatchSprite, "Press A to unrack when prompted.")
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteMoveToLocation(this.arrowSprite, 130, 40, 100)
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the bobbing weight.")
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteMoveToLocation(this.arrowSprite, 130, 60, 100)
+                animation.runMovementAnimation(this.bobSprite, animation.animationPresets(animation.bobbing), 1000, false)
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the grean bar will push your barbell up.")
+            }
+
+            if (!this.cancelTutorial) {
+                story.spriteSayText(this.coatchSprite, "Breath deep and keep that core engaged!")
+            }
             
             this.state = "start"
         })
@@ -105,8 +130,10 @@ class Squat implements Game {
         if (this.state === "lifting") {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
+            this.cancelTutorial = true
             story.cancelAllCutscenes()
             sprites.destroy(this.coatchSprite)
+            sprites.destroy(this.arrowSprite)
             this.state = "start"
         }
     }
@@ -156,6 +183,7 @@ class Squat implements Game {
             this.moveWeight()
         } else if (this.state === "start") {
             sprites.destroy(this.coatchSprite)
+            sprites.destroy(this.arrowSprite)
             this.setGym()
             this.state = "racked"
         } else if (this.state === "racked") {
@@ -170,7 +198,7 @@ class Squat implements Game {
      * Draw squat heads up display
      */
     protected drawHUD() {
-        if (this.state == "lose") {
+        if (this.state == "lose" || this.state == "tutorial") {
             return
         }
 
@@ -278,16 +306,20 @@ class Squat implements Game {
         this.powerBar.max = 100
         this.powerBar.value = 10
 
-        this.weightSprite = sprites.create(assets.image`squatBar`, SpriteKind.Lift)
-        this.weightSprite.setPosition(70, this.weightTop)
+        if (this.state != "tutorial") {
+            this.weightSprite = sprites.create(assets.image`squatBar`, SpriteKind.Lift)
+             this.weightSprite.setPosition(70, this.weightTop)
+        }
 
         if (this.sweating) {
             effects.clearParticles(this.squatterSprite)
             this.sweating = false
         }
 
-        this.squatterSprite = sprites.create(assets.image`squatter`, SpriteKind.Lift)
-        this.squatterSprite.setPosition(70, 50)
+        if (this.state != "tutorial") {
+            this.squatterSprite = sprites.create(assets.image`squatter`, SpriteKind.Lift)
+            this.squatterSprite.setPosition(70, 50)
+        }
 
         this.currentWeight = 65 + this.level * 10
     }
@@ -324,7 +356,7 @@ class Squat implements Game {
             sprites.destroy(this.hudAction)
         } else {
             music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-            game.splash("Oh common!", "Time to get training!")
+            game.splash("Oh come on!", "Time to get training!")
         }
         
 

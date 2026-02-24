@@ -334,7 +334,7 @@ class Bench implements Game {
             sprites.destroy(this.hudAction)
         } else {
             music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-            game.splash("Oh common!", "Time to get training!")
+            game.splash("Oh come on!", "Time to get training!")
         }
  
         this.gamesEngine.stop(this)
