@@ -71,6 +71,10 @@ class Player implements Game {
         return this.sprites[this.coach]
     }
 
+    get randomImage() {
+        return this.sprites[randint(0, this.sprites.length - 1)]
+    }
+
     protected drawCurrent() {
         this.selectorSprite.setImage(this.sprites[this.current])
         this.selectorSprite.setScale(0.5, ScaleAnchor.Middle)

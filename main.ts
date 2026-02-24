@@ -7,6 +7,7 @@ enum ActionKind {
 
 namespace SpriteKind {
     export const Splash = SpriteKind.create()
+    export const SplashCoatch = SpriteKind.create()
     export const benchBar = SpriteKind.create()
     export const Lift = SpriteKind.create()
     export const Coatch = SpriteKind.create()
@@ -32,7 +33,7 @@ gamesObj.add(overObj)
 /**
  * Kick off game
  */
-splashObj.show()
+splashObj.show(gamesObj.player)
 pauseUntil(() => controller.A.isPressed())
 splashObj.hide()
 gamesObj.start()
