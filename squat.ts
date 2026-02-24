@@ -106,7 +106,7 @@ class Squat implements Game {
             }
 
             if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the bobbing weight.")
+                story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the weight.")
             }
 
             if (!this.cancelTutorial) {
@@ -115,7 +115,7 @@ class Squat implements Game {
             }
 
             if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the grean bar will push your barbell up.")
+                story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the green bar will push your barbell up.")
             }
 
             if (!this.cancelTutorial) {
