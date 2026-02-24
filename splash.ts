@@ -48,13 +48,13 @@ class Splash {
             this.count++
 
             let coatchImage = this.players.randomImage;
-            let coatchFlip = randint(0, 4)
+            let coatchFlip = randint(0, 8)
 
             if (coatchFlip === 0) {
                 coatchImage.flipX()
             } else if (coatchFlip == 2) {
                 coatchImage.flipY()
-            } else if (coatchFlip == 3) {
+            } else if (coatchFlip == 5) {
                 coatchImage.flipX()
                 coatchImage.flipY()
             }
