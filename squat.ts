@@ -131,7 +131,7 @@ class Squat implements Game {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
             this.cancelTutorial = true
-            story.cancelAllCutscenes()
+            story.cancelCurrentCutscene()
             sprites.destroy(this.coatchSprite)
             sprites.destroy(this.arrowSprite)
             this.state = "start"
@@ -348,9 +348,9 @@ class Squat implements Game {
 
             music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
             if (this.gamesEngine.leftToPlay() > 0) {
-                game.splash("You Benched " + this.score + " points!", "Let's try anther lift.")
+                game.splash("You Squatted " + this.score + " points!", "Let's try anther lift.")
             } else {
-                game.splash("You Benched " + this.score + " points!", "Time for a coffee break!")
+                game.splash("You Squatted " + this.score + " points!", "Time for a coffee break!")
             }
 
             sprites.destroy(this.hudAction)

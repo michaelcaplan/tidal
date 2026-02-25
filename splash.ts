@@ -47,7 +47,7 @@ class Splash {
 
             this.count++
 
-            let coatchImage = this.players.randomImage;
+            let coatchImage = this.players.randomImage.clone();
             let coatchFlip = randint(0, 8)
 
             if (coatchFlip === 0) {
