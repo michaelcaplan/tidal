@@ -76,6 +76,10 @@ class Over implements Game {
         // do nothing
     }
 
+    public handleUpEvent() {
+        // do nothing
+    }
+
     public handleGameLoop() {
         // do nothing
     }

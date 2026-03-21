@@ -107,6 +107,10 @@ class Player implements Game {
         this.drawCurrent()
     }
 
+    public handleUpEvent() {
+
+    }
+    
     /**
      * Choose your player A button event
      */

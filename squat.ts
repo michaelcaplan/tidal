@@ -43,7 +43,7 @@ class Squat implements Game {
             this.powerBar.setColor(2, 14)
 
             if (this.ticksOver === 0) {
-                // start 1 second buffer time till loose
+                // start 1 second buffer time till lose
                 this.ticksOver = game.runtime()
                 if (!this.sweating) {
                     this.squatterSprite.startEffect(effects.spray)
@@ -71,7 +71,7 @@ class Squat implements Game {
 
         statusbars.onStatusReached(StatusBarKind.SquatPower, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 25, (status) => {
             this.powerBar.setColor(5, 14)
-            // reset loose buffer time
+            // reset lose buffer time
             this.ticksOver = 0
         })
 
@@ -147,6 +147,10 @@ class Squat implements Game {
     }
 
     public handleRightEvent() {
+
+    }
+
+    public handleUpEvent() {
 
     }
 
@@ -237,7 +241,7 @@ class Squat implements Game {
         } else if (this.state == "win") {
             this.hudAction = textsprite.create("Yes!!!", 15, 0)
             this.hudAction.setPosition(80, 10)
-        } else if (this.state == "loose") {
+        } else if (this.state == "lose") {
             this.hudAction = textsprite.create("Good Try", 15, 0)
             this.hudAction.setPosition(80, 10)
         }

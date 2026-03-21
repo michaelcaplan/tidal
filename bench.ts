@@ -144,6 +144,10 @@ class Bench implements Game {
 
     }
 
+    public handleUpEvent() {
+
+    }
+
     public handleGameLoop() {
         if (this.leftSprite && this.rightSprite) {
             let gameLoopCurrent = game.runtime() - this.gameLoopLast

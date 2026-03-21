@@ -32,10 +32,17 @@ class Games {
         })
 
         /**
-         * Manage P2 right button
+         * Manage P1 right button
          */
         controller.right.onEvent(ControllerButtonEvent.Pressed, () => {
             this.handleRightEvent()
+        })
+
+        /**
+         * Manage P1 up button
+         */
+        controller.up.onEvent(ControllerButtonEvent.Pressed, () => {
+            this.handleUpEvent()
         })
 
         /**
@@ -142,6 +149,14 @@ class Games {
         }
         
         this.games[this.currentGame].handleRightEvent()
+    }
+
+    protected handleUpEvent() {
+        if (this.currentGame == null) {
+            return
+        }
+
+        this.games[this.currentGame].handleUpEvent()
     }
 
     protected handleGameLoop() {

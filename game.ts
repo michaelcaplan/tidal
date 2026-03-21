@@ -13,5 +13,7 @@ interface Game {
 
     handleRightEvent(): void
 
+    handleUpEvent(): void
+
     handleGameLoop(): void
 }
