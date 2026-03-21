@@ -17,18 +17,15 @@ class Deadlift implements Game {
     protected weightTop = 55
     protected weightSprite: Sprite = null
     protected lifterSprite: Sprite = null
-
-    protected barPicture: Image = null
-    protected bobSprite: Sprite = null
-    protected barSprite: Sprite = null
-    protected powerBar: StatusBarSprite = null
     protected level = 1
-    protected coatchSprite: Sprite = null
     protected score = 0
-    protected currentWeight = 0
-    protected ticksOver: number = 0
+    protected coatchSprite: Sprite = null
     protected sweating: boolean = false
     protected cancelTutorial: boolean = false
+    protected currentWeight = 0
+    protected barSprite: Sprite = null
+    protected timerLast: number = 0
+    protected gripLast: number = 0
 
 
     constructor(gamesEngine: Games) {
@@ -71,10 +68,11 @@ class Deadlift implements Game {
         // time up
         statusbars.onStatusReached(StatusBarKind.DeadliftTimer, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
             this.state = "lose"
+            this.stop()
         })
 
         // lift win
-        statusbars.onStatusReached(StatusBarKind.DeadliftLift, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 70, (status) => {
+        statusbars.onStatusReached(StatusBarKind.DeadliftLift, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
             this.state = "win"
             this.score += this.currentWeight
             info.changeScoreBy(this.currentWeight)
@@ -191,7 +189,7 @@ class Deadlift implements Game {
 
     public handleUpEvent() {
         if (this.state === "lifting") {
-            
+            this.liftBar.value += 10
         }
     }
 
@@ -204,7 +202,24 @@ class Deadlift implements Game {
     }
 
     public handleGameLoop() {
+        if (this.state === "lose") {
+            return
+        }
+        
         if (this.state === "lifting") {
+
+            let timerCurrent = game.runtime() - this.timerLast
+            let gripCurrent = game.runtime() - this.gripLast
+
+            if (timerCurrent >= 150) {
+                this.timerLast = game.runtime()
+                this.timerBar.value += -1
+            }
+
+            if (gripCurrent >= 2000 - (this.level * 10)) {
+                this.gripLast = game.runtime()
+                this.gripBar.value -= 10
+            }
 
             if (this.timerBar.value < 20 && this.liftBar.value < 60) {
                 if (!this.sweating) {
@@ -213,28 +228,19 @@ class Deadlift implements Game {
                 }
             }
 
-            // if (this.barSprite.overlapsWith(this.bobSprite)) {
-            //     this.powerBar.value += 1
-            //     this.barPicture.fill(7)
-            //     this.moveWeight()
-            // } else {
-                
-            //     if (this.powerBar.value === 0) {
-            //         if ((game.runtime() - this.ticksOver) >= 1000) {
-            //             // 1 second buffer time from hitting 0 lapsed
-            //             // Drop bar
-            //             this.state = "lose"
+            // check if grip was lost
+            if (this.liftBar.value > 0 && this.gripBar.value < 50) {
+                // drop bar
+                this.weightSprite.ay = 150
+                this.weightSprite.setFlag(SpriteFlag.AutoDestroy, true)
+                this.weightSprite.onDestroyed(() => {
+                    this.state = "lose"
+                    this.stop()
+                })
+            }
 
-            //             this.weightSprite.ay = 150
-            //             this.weightSprite.setFlag(SpriteFlag.AutoDestroy, true)
-            //             this.weightSprite.onDestroyed(() => {
-            //                 this.stop()
-            //             })
-            //         }
-            //     }
+            this.moveWeight()
 
-            //     this.powerBar.value += -1
-            // }
         } else if (this.state === "decent") {
             this.moveWeight()
         } else if (this.state === "start") {
@@ -244,8 +250,11 @@ class Deadlift implements Game {
             this.setGym()
             this.state = "racked"
         } else if (this.state === "racked") {
-            game.splash("A to unrack")
+            game.splash("A to start")
             this.state = "decent"
+        } else {
+            this.timerLast = game.runtime()
+            this.gripLast = game.runtime()
         }
 
         this.drawHUD()
@@ -318,18 +327,18 @@ class Deadlift implements Game {
 
 
         } else if (this.state === "lifting") {
-            let targetY = this.weightBottom - Math.ceil((this.weightBottom - this.weightTop) * (this.powerBar.value / 100))
+            let targetY = this.weightBottom - Math.ceil((this.weightBottom - this.weightTop) * (this.liftBar.value / 100))
 
-            if (targetY < this.weightSprite.y) {
-                this.weightSprite.y = targetY
+            this.weightSprite.y = targetY
+            
+            let scaleY = 50 + Math.ceil((120 - 50) * (this.liftBar.value / 100))
 
-                scaling.scaleToPixels(
-                    this.lifterSprite,
-                    (120 - ((this.weightSprite.y - this.weightTop) * 1.5)),
-                    ScaleDirection.Vertically,
-                    ScaleAnchor.Bottom
-                )
-            }
+            scaling.scaleToPixels(
+                this.lifterSprite,
+                scaleY,
+                ScaleDirection.Vertically,
+                ScaleAnchor.Bottom
+            )
 
         }
     }
