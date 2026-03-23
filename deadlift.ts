@@ -14,7 +14,7 @@ class Deadlift implements Game {
     protected hudWeight: TextSprite = null
     protected hudLevel: TextSprite = null
     protected weightBottom = 100
-    protected weightTop = 55
+    protected weightTop = 65
     protected weightSprite: Sprite = null
     protected lifterSprite: Sprite = null
     protected level = 1
@@ -69,18 +69,6 @@ class Deadlift implements Game {
         statusbars.onStatusReached(StatusBarKind.DeadliftTimer, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 0, (status) => {
             this.state = "lose"
             this.stop()
-        })
-
-        // lift win
-        statusbars.onStatusReached(StatusBarKind.DeadliftLift, statusbars.StatusComparison.EQ, statusbars.ComparisonType.Fixed, 100, (status) => {
-            this.state = "win"
-            this.score += this.currentWeight
-            info.changeScoreBy(this.currentWeight)
-            music.play(music.createSoundEffect(WaveShape.Noise, 3900, 3500, 255, 0, 10, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
-            game.splash(this.gamesEngine.saying + " " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 10) + "LBs")
-            this.level += 1
-            this.setGym()
-            this.state = "decent"
         })
 
         this.setGym()
@@ -174,6 +162,7 @@ class Deadlift implements Game {
             sprites.destroy(this.coatchSprite)
             sprites.destroy(this.arrowRightSprite)
             sprites.destroy(this.arrowDownSprite)
+            
             this.state = "start"
         }
     }
@@ -188,8 +177,37 @@ class Deadlift implements Game {
     }
 
     public handleUpEvent() {
+        console.logValue('liftBar', this.liftBar.value)
+        console.logValue('gripBar', this.gripBar.value)
+        console.logValue('state', this.state)
         if (this.state === "lifting") {
-            this.liftBar.value += 10
+            let lift = (this.weightBottom - this.weightTop) / this.level
+
+            if (this.gripBar.value < 50) {
+                // drop bar
+                this.state = "lose"
+                this.weightSprite.ay = 150
+                this.weightSprite.setFlag(SpriteFlag.AutoDestroy, true)
+                this.weightSprite.onDestroyed(() => {
+                    this.stop()
+                })
+            } else {
+                this.liftBar.value += lift
+
+                console.logValue('lift', lift)
+
+                if (this.liftBar.value === 100) {
+                    this.state = "win"
+                    this.score += this.currentWeight
+                    info.changeScoreBy(this.currentWeight)
+                    music.play(music.createSoundEffect(WaveShape.Noise, 3900, 3500, 255, 0, 10, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
+                    game.splash(this.gamesEngine.saying + " " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 25) + "LBs")
+                    this.level += 1
+                    this.setGym()
+                    this.state = "decent"
+                }
+            }
+        
         }
     }
 
@@ -231,10 +249,10 @@ class Deadlift implements Game {
             // check if grip was lost
             if (this.liftBar.value > 0 && this.gripBar.value < 50) {
                 // drop bar
+                this.state = "lose"
                 this.weightSprite.ay = 150
                 this.weightSprite.setFlag(SpriteFlag.AutoDestroy, true)
                 this.weightSprite.onDestroyed(() => {
-                    this.state = "lose"
                     this.stop()
                 })
             }
@@ -345,6 +363,10 @@ class Deadlift implements Game {
 
     protected setGym() {
 
+        if (this.state === "lose") {
+            return
+        }
+
         sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroy(this.gripBar)
@@ -391,10 +413,13 @@ class Deadlift implements Game {
             this.lifterSprite.setPosition(70, 50)
         }
 
-        this.currentWeight = 65 + this.level * 10
+        this.currentWeight = 50 + this.level * 25
     }
 
     protected stop() {
+        let gripValue = this.gripBar.value
+        let liftValue = this.liftBar.value
+
         sprites.destroyAllSpritesOfKind(SpriteKind.Lift)
         sprites.destroyAllSpritesOfKind(SpriteKind.Player)
         sprites.destroy(this.liftBar)
@@ -421,7 +446,12 @@ class Deadlift implements Game {
             sprites.destroy(this.hudAction)
         } else {
             music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-            game.splash("Oh come on!", "Time to get training!")
+
+            if (liftValue === 0 && gripValue === 0) {
+                game.splash("Get a grip before lifting", "Try again another time")
+            } else {
+                game.splash("Oh come on!", "Time to get training!")
+            }
         }
 
 

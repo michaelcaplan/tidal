@@ -37,6 +37,7 @@ class Over implements Game {
             
             if (info.score() == 0) {
                 winMessage = "Ouch!  You can do better then that!"
+                info.setScore(0)
             } else {
                 if (info.score() > info.highScore()) {
                     winMessage = "Heck ya! " + info.score() + " points!  New high score!!!!"
