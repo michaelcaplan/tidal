@@ -30,25 +30,22 @@ class Over implements Game {
             )
         } else {
             sprite.startEffect(effects.ashes, 5000)
-        }   
-        
-        story.startCutscene(() => {
-            let winMessage = ""
-            
-            if (info.score() == 0) {
-                winMessage = "Ouch!  You can do better then that!"
-                info.setScore(0)
-            } else {
-                if (info.score() > info.highScore()) {
-                    winMessage = "Heck ya! " + info.score() + " points!  New high score!!!!"
-                } else {
-                    winMessage = "Heck ya! " + info.score() + " points!  Hit the gym to level up."
-                }
-            }
- 
-            story.printCharacterText(winMessage, this.gameEngine.player.selectedPlayerName)
+        }
 
-        })
+        let winMessage = ""
+        
+        if (info.score() == 0) {
+            winMessage = "Ouch!  You can do better then that!"
+            info.setScore(0)
+        } else {
+            if (info.score() > info.highScore()) {
+                winMessage = "Heck ya! " + info.score() + " points!  New high score!!!!"
+            } else {
+                winMessage = "Heck ya! " + info.score() + " points!  Hit the gym to level up."
+            }
+        }
+
+        story.printCharacterText(winMessage, this.gameEngine.player.selectedPlayerName)
 
         timer.after(5000, function () {
             if (info.score() == 0) {

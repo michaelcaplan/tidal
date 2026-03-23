@@ -329,7 +329,7 @@ class Squat implements Game {
     }
 
     protected drawBar (level: number) {
-        this.barPicture = image.create(11, Math.constrain(50 - level * 3, 25, 50))
+        this.barPicture = image.create(11, Math.constrain(50 - level * 3, 20, 50))
         this.barPicture.fill(7)
         this.barSprite = sprites.create(this.barPicture, SpriteKind.Player)
         this.barSprite.setPosition(145, 60)

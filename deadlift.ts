@@ -34,7 +34,7 @@ class Deadlift implements Game {
 
     public start() {
 
-        music.play(music.createSong(assets.song`thunderstruck`), music.PlaybackMode.LoopingInBackground)
+        music.play(music.createSong(assets.song`footloose`), music.PlaybackMode.LoopingInBackground)
 
         // grip good
         statusbars.onStatusReached(StatusBarKind.DeadliftGrip, statusbars.StatusComparison.GTE, statusbars.ComparisonType.Fixed, 50, (status) => {
@@ -43,7 +43,7 @@ class Deadlift implements Game {
 
         // grip bad
         statusbars.onStatusReached(StatusBarKind.DeadliftGrip, statusbars.StatusComparison.LT, statusbars.ComparisonType.Fixed, 50, (status) => {
-            this.gripBar.setColor(4, 14)
+            this.gripBar.setColor(2, 14)
 
             if (this.state === "lifting" && this.liftBar.value > 0) {
                 this.state = "lose"
@@ -52,12 +52,12 @@ class Deadlift implements Game {
 
         // time running out 
         statusbars.onStatusReached(StatusBarKind.DeadliftTimer, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Fixed, 20, (status) => {
-            this.timerBar.setColor(7, 14)
+            this.timerBar.setColor(2, 14)
         })
 
         // lift near win
         statusbars.onStatusReached(StatusBarKind.DeadliftLift, statusbars.StatusComparison.GTE, statusbars.ComparisonType.Fixed, 70, (status) => {
-            this.liftBar.setColor(4, 14)
+            this.liftBar.setColor(9, 14)
         })
 
         // lift not there
@@ -125,7 +125,7 @@ class Deadlift implements Game {
 
             if (!this.cancelTutorial) {
                 this.liftBar.value = 60
-                this.liftBar.setColor(4, 14)
+                this.liftBar.setColor(9, 14)
                 story.spriteSayText(this.coatchSprite, "With your grip juiced, press UP repeatedly to pull that bar up.")
             }
 
@@ -135,7 +135,7 @@ class Deadlift implements Game {
 
             if (!this.cancelTutorial) {
                 this.timerBar.value = 40
-                this.timerBar.setColor(7, 14)
+                this.timerBar.setColor(2, 14)
                 story.spriteSayText(this.coatchSprite, "Lift fast to beat the clock.")
             }
 
@@ -153,7 +153,7 @@ class Deadlift implements Game {
         } if (this.state === "lifting") {
             if (controller.B.isPressed()) {
                 // juice grip
-                this.gripBar.value += 10
+                this.gripBar.value += Math.constrain(11 - this.level, 2, 10)
             }
 
         } else if (this.state === "tutorial") {
@@ -171,15 +171,12 @@ class Deadlift implements Game {
         if (this.state === "lifting") {
             if (controller.A.isPressed()) {
                 // juice grip
-                this.gripBar.value += 10
+                this.gripBar.value += Math.constrain(11 - this.level, 2, 10)
             }
         }
     }
 
     public handleUpEvent() {
-        console.logValue('liftBar', this.liftBar.value)
-        console.logValue('gripBar', this.gripBar.value)
-        console.logValue('state', this.state)
         if (this.state === "lifting") {
             let lift = (this.weightBottom - this.weightTop) / this.level
 
@@ -194,13 +191,13 @@ class Deadlift implements Game {
             } else {
                 this.liftBar.value += lift
 
-                console.logValue('lift', lift)
-
                 if (this.liftBar.value === 100) {
                     this.state = "win"
                     this.score += this.currentWeight
                     info.changeScoreBy(this.currentWeight)
-                    music.play(music.createSoundEffect(WaveShape.Noise, 3900, 3500, 255, 0, 10, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
+                    
+                    music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.UntilDone)
+
                     game.splash(this.gamesEngine.saying + " " + this.currentWeight + "LBs!", "Lets go for " + (this.currentWeight + 25) + "LBs")
                     this.level += 1
                     this.setGym()
@@ -236,10 +233,10 @@ class Deadlift implements Game {
 
             if (gripCurrent >= 2000 - (this.level * 10)) {
                 this.gripLast = game.runtime()
-                this.gripBar.value -= 10
+                this.gripBar.value -= Math.constrain(9 + Math.floor(this.level / 2), 10, 20)
             }
 
-            if (this.timerBar.value < 20 && this.liftBar.value < 60) {
+            if (this.timerBar.value < 50 && this.liftBar.value < 50) {
                 if (!this.sweating) {
                     this.lifterSprite.startEffect(effects.spray)
                     this.sweating = true
@@ -299,10 +296,10 @@ class Deadlift implements Game {
         }
 
         this.hudLevel = textsprite.create("Level " + this.level, 15, 0)
-        this.hudLevel.setPosition(30, 110)
+        this.hudLevel.setPosition(30, 111)
 
         this.hudWeight = textsprite.create("Weight " + this.currentWeight + "LBs", 15, 0)
-        this.hudWeight.setPosition(110, 110)
+        this.hudWeight.setPosition(110, 111)
 
         if (this.state == "racked") {
             this.hudAction = textsprite.create("Press A To Start", 15, 0)
@@ -380,7 +377,7 @@ class Deadlift implements Game {
             this.gripBar.setPosition(60, 20)
         }
         this.gripBar.z = 200
-        this.gripBar.setColor(4, 14)
+        this.gripBar.setColor(2, 14)
         this.gripBar.setLabel("Grip ")
         this.gripBar.value = 0
 
