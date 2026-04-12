@@ -8,7 +8,7 @@ class Squat implements Game {
     protected hudAction: TextSprite = null
     protected hudWeight: TextSprite = null
     protected hudLevel: TextSprite = null
-    protected state = "tutorial"
+    protected state = "init"
     protected barPicture: Image = null
     protected bobSprite: Sprite = null
     protected barSprite: Sprite = null
@@ -80,8 +80,6 @@ class Squat implements Game {
     }
 
     protected tutorial() {
-        this.state = "tutorial"
-
         this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
         this.coatchSprite.setPosition(-20, 100)
 
@@ -89,41 +87,51 @@ class Squat implements Game {
         this.arrowSprite.setPosition(-20, 100)
 
         story.startCutscene(() => {
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {       
                 story.spriteSayText(this.coatchSprite, "Squat time! Here are some tips.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Press A to unrack when prompted.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.arrowSprite, 130, 40, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the weight.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.arrowSprite, 130, 60, 100)
                 animation.runMovementAnimation(this.bobSprite, animation.animationPresets(animation.bobbing), 1000, false)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the green bar will push your barbell up.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Breath deep and keep that core engaged!")
             }
             
             this.state = "start"
         })
+
+        this.state = "tutorial"
     }
 
     public handleAEvent() {
@@ -131,6 +139,7 @@ class Squat implements Game {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
             this.cancelTutorial = true
+            console.logValue('cancelCurrentCutscene', 1)
             story.cancelCurrentCutscene()
             sprites.destroy(this.coatchSprite)
             sprites.destroy(this.arrowSprite)
@@ -202,7 +211,7 @@ class Squat implements Game {
      * Draw squat heads up display
      */
     protected drawHUD() {
-        if (this.state == "lose" || this.state == "tutorial") {
+        if (this.state == "lose" || this.state == "tutorial" || this.state == "init") {
             return
         }
 
@@ -310,7 +319,7 @@ class Squat implements Game {
         this.powerBar.max = 100
         this.powerBar.value = 10
 
-        if (this.state != "tutorial") {
+        if (this.state != "tutorial" && this.state != "init") {
             this.weightSprite = sprites.create(assets.image`squatBar`, SpriteKind.Lift)
              this.weightSprite.setPosition(70, this.weightTop)
         }
@@ -320,7 +329,7 @@ class Squat implements Game {
             this.sweating = false
         }
 
-        if (this.state != "tutorial") {
+        if (this.state != "tutorial" && this.state != "init") {
             this.squatterSprite = sprites.create(assets.image`squatter`, SpriteKind.Lift)
             this.squatterSprite.setPosition(70, 50)
         }

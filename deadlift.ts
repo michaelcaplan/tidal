@@ -9,7 +9,7 @@ class Deadlift implements Game {
     protected liftBar: StatusBarSprite = null
     protected arrowRightSprite: Sprite = null
     protected arrowDownSprite: Sprite = null
-    protected state = "tutorial"
+    protected state = "init"
     protected hudAction: TextSprite = null
     protected hudWeight: TextSprite = null
     protected hudLevel: TextSprite = null
@@ -77,8 +77,6 @@ class Deadlift implements Game {
     }
 
     protected tutorial() {
-        this.state = "tutorial"
-
         this.coatchSprite = sprites.create(this.gamesEngine.player.coatchImage, SpriteKind.Coatch)
         this.coatchSprite.setPosition(-20, 100)
         this.coatchSprite.z = 100
@@ -91,60 +89,75 @@ class Deadlift implements Game {
         this.arrowRightSprite.setPosition(-20, 100)
         this.arrowRightSprite.z = 300
 
+        this.cancelTutorial = false
+
         story.startCutscene(() => {
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Doing the Deadlift! Here are some tips.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Press A to get ready to lift when prompted.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.arrowDownSprite, 80, 85, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 this.gripBar.value = 60
                 this.gripBar.setColor(7, 14)
                 story.spriteSayText(this.coatchSprite, "Press A+B to juice up your grip, getting it into the green zone.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Keep mashing A+B to keep your grip strong.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 sprites.destroy(this.arrowDownSprite)
                 story.spriteMoveToLocation(this.arrowRightSprite, 130, 60, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 this.liftBar.value = 60
                 this.liftBar.setColor(9, 14)
                 story.spriteSayText(this.coatchSprite, "With your grip juiced, press UP repeatedly to pull that bar up.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteMoveToLocation(this.arrowRightSprite, 140, 60, 100)
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 this.timerBar.value = 40
                 this.timerBar.setColor(2, 14)
                 story.spriteSayText(this.coatchSprite, "Lift fast to beat the clock.")
             }
 
+            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
             if (!this.cancelTutorial) {
                 story.spriteSayText(this.coatchSprite, "Enage your core by breathing deep!")
             }
 
             this.state = "start"
         })
+
+        this.state = "tutorial"
     }
 
     public handleAEvent() {
@@ -158,6 +171,7 @@ class Deadlift implements Game {
 
         } else if (this.state === "tutorial") {
             this.cancelTutorial = true
+            console.logValue('cancelCurrentCutscene', 1)
             story.cancelCurrentCutscene()
             sprites.destroy(this.coatchSprite)
             sprites.destroy(this.arrowRightSprite)
@@ -279,7 +293,7 @@ class Deadlift implements Game {
      * Draw squat heads up display
      */
     protected drawHUD() {
-        if (this.state == "lose" || this.state == "tutorial") {
+        if (this.state == "lose" || this.state == "tutorial" || this.state == "init") {
             return
         }
 
@@ -371,7 +385,7 @@ class Deadlift implements Game {
         sprites.destroy(this.liftBar)
 
         this.gripBar = statusbars.create(40, 5, StatusBarKind.DeadliftGrip)
-        if (this.state === "tutorial") {
+        if (this.state === "tutorial" || this.state == "init") {
             this.gripBar.setPosition(60, 100)
         } else {
             this.gripBar.setPosition(60, 20)
@@ -400,12 +414,12 @@ class Deadlift implements Game {
             this.sweating = false
         }
 
-        if (this.state != "tutorial") {
+        if (this.state != "tutorial" && this.state != "init") {
             this.weightSprite = sprites.create(assets.image`squatBar`, SpriteKind.Lift)
             this.weightSprite.setPosition(70, this.weightBottom)
         }
 
-        if (this.state != "tutorial") {
+        if (this.state != "tutorial" && this.state != "init") {
             this.lifterSprite = sprites.create(assets.image`deadlifter`, SpriteKind.Lift)
             this.lifterSprite.setPosition(70, 50)
         }
