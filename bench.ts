@@ -120,10 +120,9 @@ class Bench implements Game {
             this.leftSprite.y += 5
             this.rightSprite.y += 5
         } else if (this.state == "tutorial") {
-            console.logValue('cancelCurrentCutscene', 1)
-            story.cancelCurrentCutscene()
-            sprites.destroy(this.coatchSprite)
-            this.state = "start"
+            // story.cancelCurrentCutscene()
+            // sprites.destroy(this.coatchSprite)
+            // this.state = "start"
         }
     }
     

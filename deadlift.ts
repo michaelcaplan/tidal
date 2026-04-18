@@ -21,7 +21,6 @@ class Deadlift implements Game {
     protected score = 0
     protected coatchSprite: Sprite = null
     protected sweating: boolean = false
-    protected cancelTutorial: boolean = false
     protected currentWeight = 0
     protected barSprite: Sprite = null
     protected timerLast: number = 0
@@ -89,70 +88,35 @@ class Deadlift implements Game {
         this.arrowRightSprite.setPosition(-20, 100)
         this.arrowRightSprite.z = 300
 
-        this.cancelTutorial = false
-
         story.startCutscene(() => {
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
-            }
+            story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Doing the Deadlift! Here are some tips.")
-            }
+            story.spriteSayText(this.coatchSprite, "Doing the Deadlift! Here are some tips.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Press A to get ready to lift when prompted.")
-            }
+            story.spriteSayText(this.coatchSprite, "Press A to get ready to lift when prompted.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.arrowDownSprite, 80, 85, 100)
-            }
+            story.spriteMoveToLocation(this.arrowDownSprite, 80, 85, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                this.gripBar.value = 60
-                this.gripBar.setColor(7, 14)
-                story.spriteSayText(this.coatchSprite, "Press A+B to juice up your grip, getting it into the green zone.")
-            }
+            this.gripBar.value = 60
+            this.gripBar.setColor(7, 14)
+            story.spriteSayText(this.coatchSprite, "Press A+B to juice up your grip, getting it into the green zone.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Keep mashing A+B to keep your grip strong.")
-            }
+            story.spriteSayText(this.coatchSprite, "Keep mashing A+B to keep your grip strong.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                sprites.destroy(this.arrowDownSprite)
-                story.spriteMoveToLocation(this.arrowRightSprite, 130, 60, 100)
-            }
+            sprites.destroy(this.arrowDownSprite)
+            story.spriteMoveToLocation(this.arrowRightSprite, 130, 60, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                this.liftBar.value = 60
-                this.liftBar.setColor(9, 14)
-                story.spriteSayText(this.coatchSprite, "With your grip juiced, press UP repeatedly to pull that bar up.")
-            }
+            this.liftBar.value = 60
+            this.liftBar.setColor(9, 14)
+            story.spriteSayText(this.coatchSprite, "With your grip juiced, press UP repeatedly to pull that bar up.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.arrowRightSprite, 140, 60, 100)
-            }
+            story.spriteMoveToLocation(this.arrowRightSprite, 140, 60, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                this.timerBar.value = 40
-                this.timerBar.setColor(2, 14)
-                story.spriteSayText(this.coatchSprite, "Lift fast to beat the clock.")
-            }
+            this.timerBar.value = 40
+            this.timerBar.setColor(2, 14)
+            story.spriteSayText(this.coatchSprite, "Lift fast to beat the clock.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Enage your core by breathing deep!")
-            }
+            story.spriteSayText(this.coatchSprite, "Enage your core by breathing deep!")
 
             this.state = "start"
         })
@@ -170,14 +134,12 @@ class Deadlift implements Game {
             }
 
         } else if (this.state === "tutorial") {
-            this.cancelTutorial = true
-            console.logValue('cancelCurrentCutscene', 1)
-            story.cancelCurrentCutscene()
-            sprites.destroy(this.coatchSprite)
-            sprites.destroy(this.arrowRightSprite)
-            sprites.destroy(this.arrowDownSprite)
+            // story.cancelCurrentCutscene()
+            // sprites.destroy(this.coatchSprite)
+            // sprites.destroy(this.arrowRightSprite)
+            // sprites.destroy(this.arrowDownSprite)
             
-            this.state = "start"
+            // this.state = "start"
         }
     }
 

@@ -24,8 +24,6 @@ class Squat implements Game {
     protected currentWeight = 0
     protected ticksOver:number = 0
     protected sweating: boolean = false
-    protected cancelTutorial: boolean = false
-
 
     constructor(gamesEngine: Games) {
         this.gamesEngine = gamesEngine
@@ -87,46 +85,22 @@ class Squat implements Game {
         this.arrowSprite.setPosition(-20, 100)
 
         story.startCutscene(() => {
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
-            }
+            story.spriteMoveToLocation(this.coatchSprite, 40, 100, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {       
-                story.spriteSayText(this.coatchSprite, "Squat time! Here are some tips.")
-            }
+            story.spriteSayText(this.coatchSprite, "Squat time! Here are some tips.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Press A to unrack when prompted.")
-            }
+            story.spriteSayText(this.coatchSprite, "Press A to unrack when prompted.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.arrowSprite, 130, 40, 100)
-            }
+            story.spriteMoveToLocation(this.arrowSprite, 130, 40, 100)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the weight.")
-            }
+            story.spriteSayText(this.coatchSprite, "At the the bottom of your squat, press A to keep the green bar lined up with the weight.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteMoveToLocation(this.arrowSprite, 130, 60, 100)
-                animation.runMovementAnimation(this.bobSprite, animation.animationPresets(animation.bobbing), 1000, false)
-            }
+            story.spriteMoveToLocation(this.arrowSprite, 130, 60, 100)
+            animation.runMovementAnimation(this.bobSprite, animation.animationPresets(animation.bobbing), 1000, false)
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the green bar will push your barbell up.")
-            }
+            story.spriteSayText(this.coatchSprite, "Keeping the bobbing weight aligned with the green bar will push your barbell up.")
 
-            console.logValue('cancelTutorial', this.cancelTutorial ? 1 : 0)
-            if (!this.cancelTutorial) {
-                story.spriteSayText(this.coatchSprite, "Breath deep and keep that core engaged!")
-            }
+            story.spriteSayText(this.coatchSprite, "Breath deep and keep that core engaged!")
             
             this.state = "start"
         })
@@ -138,12 +112,10 @@ class Squat implements Game {
         if (this.state === "lifting") {
             this.barSprite.vy = -35
         } else if (this.state === "tutorial") {
-            this.cancelTutorial = true
-            console.logValue('cancelCurrentCutscene', 1)
-            story.cancelCurrentCutscene()
-            sprites.destroy(this.coatchSprite)
-            sprites.destroy(this.arrowSprite)
-            this.state = "start"
+            // story.cancelCurrentCutscene()
+            // sprites.destroy(this.coatchSprite)
+            // sprites.destroy(this.arrowSprite)
+            // this.state = "start"
         }
     }
     
