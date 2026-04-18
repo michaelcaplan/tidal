@@ -1,5 +1,6 @@
 {
     "name": "Tidal Games",
+    "version": "1.0.0",
     "description": "#STRONGER TOGETHER",
     "dependencies": {
         "device": "*",
